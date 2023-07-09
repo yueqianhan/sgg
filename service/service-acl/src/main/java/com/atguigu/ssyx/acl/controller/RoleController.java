@@ -9,10 +9,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 韩跃迁
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/acl/role")
 @Api(tags = "用户管理")
+@CrossOrigin
 public class RoleController {
 
 
@@ -41,5 +41,44 @@ public class RoleController {
         IPage<Role> pageModel = roleService.selectRolePage(pageParam,roleQueryVo);
         return Result.ok(pageModel);
 
+    }
+
+    @ApiOperation("保存一个新角色")
+    @PostMapping("save")
+    public Result save(@RequestBody Role role){
+        boolean isSuccess = roleService.save(role);
+        if (isSuccess == true){
+            return Result.ok(null);
+        }else {
+            return Result.fail(null);
+        }
+    }
+
+    @ApiOperation("根据Id获取某个角色")
+    @GetMapping("get/{id}")
+    public Result getById(@PathVariable Long id){
+        Role byId = roleService.getById(id);
+        return Result.ok(null);
+    }
+
+    @ApiOperation("更新一个角色")
+    @PutMapping("update")
+    public Result updateById(@RequestBody Role role){
+        boolean b = roleService.updateById(role);
+        return Result.ok(null);
+    }
+
+    @ApiOperation("删除某个角色")
+    @DeleteMapping("remove/{id}")
+    public Result removeById(@PathVariable Long id){
+        roleService.removeById(id);
+        return Result.ok(null);
+    }
+
+    @ApiOperation("批量删除多个角色")
+    @DeleteMapping("batchRemove")
+    public Result removeRoles(@RequestBody List<Long> idList){
+        roleService.removeByIds(idList);
+        return Result.ok(null);
     }
 }
